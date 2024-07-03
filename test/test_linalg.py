@@ -33,7 +33,7 @@ from torch.testing._internal.common_dtype import (
 )
 from torch.testing._internal.common_cuda import SM53OrLater, SM80OrLater, SM90OrLater, tf32_on_and_off, _get_magma_version, \
     _get_torch_cuda_version
-from torch.testing._internal.common_quantization import _group_quantize_tensor, _dynamically_quantize_per_channel
+# from torch.testing._internal.common_quantization import _group_quantize_tensor, _dynamically_quantize_per_channel
 from torch.testing._internal.common_mkldnn import bf32_on_and_off
 from torch.distributions.binomial import Binomial
 import torch.backends.opt_einsum as opt_einsum
@@ -4686,7 +4686,7 @@ class TestLinalg(TestCase):
         assert( (total_num_results - ref_num_results) == 1)
 
         # Set tuning iterations to zero
-        import os
+        # Tune a single GEMM and verify that we get a new tuning result
         os.environ["PYTORCH_TUNABLEOP_MAX_TUNING_ITERATIONS"] = "0"
         assert(torch.cuda.tunable.get_max_tuning_iterations() > 0)
         os.environ["PYTORCH_TUNABLEOP_MAX_TUNING_ITERATIONS"] = "100" # reset to default
