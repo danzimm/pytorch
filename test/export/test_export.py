@@ -3110,7 +3110,7 @@ def forward(self, x):
     bn_bias = self.bn.bias
     bn_running_mean = self.bn.running_mean
     bn_running_var = self.bn.running_var
-    bn_num_batches_tracked = self.bn.num_batches_tracked
+    bn_num_batches_tracked = self.bn.num_batches_tracked;  bn_num_batches_tracked = None
     conv2d = torch.ops.aten.conv2d.default(x, conv_weight, conv_bias);  x = conv_weight = conv_bias = None
     _native_batch_norm_legit_no_training = torch.ops.aten._native_batch_norm_legit_no_training.default(conv2d, bn_weight, bn_bias, bn_running_mean, bn_running_var, 0.1, 1e-05);  conv2d = bn_weight = bn_bias = bn_running_mean = bn_running_var = None
     getitem = _native_batch_norm_legit_no_training[0];  _native_batch_norm_legit_no_training = None
