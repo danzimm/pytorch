@@ -5,6 +5,7 @@ import inspect
 import json
 import os
 import pkgutil
+import subprocess
 import unittest
 from typing import Callable
 
@@ -278,11 +279,16 @@ class TestPublicBindings(TestCase):
                 # which calls sys.exit() when we try to import it
                 if "__main__" in modname:
                     continue
-                importlib.import_module(modname)
-            except Exception as e:
+
+                subprocess.check_output(
+                    ["python", "-c", f"import {modname}"],
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                )
+            except subprocess.CalledProcessError as e:
                 # Some current failures are not ImportError
 
-                failures.append((modname, type(e)))
+                failures.append((modname, e))
 
         # It is ok to add new entries here but please be careful that these modules
         # do not get imported by public code.
@@ -424,14 +430,14 @@ class TestPublicBindings(TestCase):
         }
 
         errors = []
-        for mod, excep_type in failures:
+        for mod, exc in failures:
             if mod in public_allowlist:
                 # TODO: Ensure this is the right error type
 
                 continue
             if mod in private_allowlist:
                 continue
-            errors.append(f"{mod} failed to import with error {excep_type}")
+            errors.append(f"{mod} failed to import with error:\n{exc.output}")
         self.assertEqual("", "\n".join(errors))
 
     # AttributeError: module 'torch.distributed' has no attribute '_shard'
