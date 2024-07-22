@@ -651,7 +651,6 @@ class AOTDispatchSubclassWrapper(CompilerWrapper):
                 is_runtime=True,
             )
             return wrapped_outs
-
         # box it
         inner_fn._boxed_call = True  # type: ignore[attr-defined]
         return inner_fn
